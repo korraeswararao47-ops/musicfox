@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BattleZone | Gaming Interface</title>
+
+<style>
+
+/* =========================
+   BASIC RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #050609;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.95),
+            rgba(0,0,0,.45),
+            rgba(0,0,0,.9)
+        ),
+        url("https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=2000&q=80");
+
+    background-size: cover;
+    background-position: center;
+
+    z-index: -3;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 70% 40%,
+            rgba(255,60,0,.25),
+            transparent 30%
+        );
+
+    z-index: -2;
+}
+
+/* Animated particles */
+
+.particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ff4b00;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #ff4b00;
+
+    animation: float 8s linear infinite;
+}
+
+@keyframes float {
+
+    0% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    background: rgba(0,0,0,.75);
+    border-bottom: 1px solid rgba(255,80,0,.35);
+
+    backdrop-filter: blur(12px);
+
+    position: relative;
+    z-index: 10;
+}
+
+/* Logo */
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+
+    color: #ff4b00;
+
+    text-shadow:
+        0 0 10px #ff4b00,
+        0 0 30px rgba(255,70,0,.6);
+}
+
+.logo span {
+    color: white;
+}
+
+/* Navigation */
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    background: transparent;
+    color: #aaa;
+
+    border: none;
+    padding: 12px 18px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+    transition: .3s;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    color: white;
+    background: rgba(255,70,0,.15);
+    border-bottom: 2px solid #ff4b00;
+}
+
+/* Currency */
+
+.currency {
+    display: flex;
+    gap: 12px;
+}
+
+.money {
+    background: rgba(255,255,255,.08);
+
+    padding: 9px 14px;
+
+    border-radius: 20px;
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    font-size: 14px;
+}
+
+.coin {
+    color: #ffd23f;
+}
+
+.diamond {
+    color: #55dfff;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+    max-width: 1450px;
+    margin: auto;
+    padding: 25px;
+
+    min-height: calc(100vh - 75px);
+}
+
+/* Pages */
+
+.page {
+    display: none;
+    animation: pageIn .5s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes pageIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   HOME
+========================= */
+
+.home-layout {
+
+    display: grid;
+
+    grid-template-columns:
+        280px
+        1fr
+        300px;
+
+    gap: 25px;
+
+    min-height: 650px;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.profile-card {
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.12),
+            rgba(0,0,0,.55)
+        );
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    border-radius: 18px;
+
+    padding: 22px;
+
+    backdrop-filter: blur(15px);
+
+    height: fit-content;
+}
+
+.avatar {
+
+    width: 95px;
+    height: 95px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    border: 3px solid #ff4b00;
+
+    box-shadow:
+        0 0 20px rgba(255,70,0,.7);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 48px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #222,
+            #050505
+        );
+}
+
+.username {
+    text-align: center;
+    margin-top: 15px;
+
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.level {
+    text-align: center;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.xp-box {
+    margin-top: 22px;
+}
+
+.xp-info {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.xp-bar {
+    height: 8px;
+    background: #222;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.xp-progress {
+    width: 72%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        #ff3200,
+        #ff9d00
+    );
+
+    box-shadow: 0 0 10px #ff4b00;
+}
+
+/* Stats */
+
+.stats {
+    margin-top: 25px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.stat span:first-child {
+    color: #aaa;
+}
+
+.stat span:last-child {
+    font-weight: bold;
+}
+
+/* =========================
+   CHARACTER
+========================= */
+
+.character-area {
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 650px;
+}
+
+/* Glow */
+
+.character-glow {
+
+    position: absolute;
+
+    width: 360px;
+    height: 360px;
+
+    background: #ff4b00;
+
+    filter: blur(150px);
+
+    opacity: .18;
+}
+
+/* Character */
+
+.character {
+
+    font-size: 240px;
+
+    filter:
+        drop-shadow(0 0 25px rgba(255,70,0,.5));
+
+    animation:
+        characterFloat 3s ease-in-out infinite;
+}
+
+@keyframes characterFloat {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+.character-name {
+
+    font-size: 30px;
+    font-weight: bold;
+
+    margin-top: 10px;
+
+    text-shadow: 0 0 15px #ff4b00;
+}
+
+.character-title {
+
+    color: #aaa;
+    margin-top: 5px;
+}
+
+/* Play Button */
+
+.play-btn {
+
+    margin-top: 35px;
+
+    padding: 18px 80px;
+
+    border: none;
+
+    color: white;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff2600,
+            #ff7200
+        );
+
+    clip-path:
+        polygon(
+            8% 0,
+            92% 0,
+            100% 50%,
+            92% 100%,
+            8% 100%,
+            0 50%
+        );
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 25px rgba(255,70,0,.6);
+
+    transition: .3s;
+}
+
+.play-btn:hover {
+
+    transform: scale(1.08);
+
+    box-shadow:
+        0 0 40px rgba(255,70,0,.9);
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.event-card {
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,60,0,.25),
+            rgba(0,0,0,.65)
+        );
+
+    border: 1px solid rgba(255,70,0,.3);
+
+    border-radius: 16px;
+
+    padding: 20px;
+}
+
+.event-card h3 {
+    color: #ff6b2c;
+    margin-bottom: 8px;
+}
+
+.event-card p {
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.event-btn {
+
+    margin-top: 15px;
+
+    padding: 9px 15px;
+
+    border: 1px solid #ff4b00;
+
+    background: transparent;
+
+    color: white;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+}
+
+.event-btn:hover {
+    background: #ff4b00;
+}
+
+/* =========================
+   SECTION TITLE
+========================= */
+
+.section-title {
+
+    font-size: 32px;
+    margin-bottom: 25px;
+
+    border-left: 5px solid #ff4b00;
+
+    padding-left: 15px;
+}
+
+/* =========================
+   WEAPONS
+========================= */
+
+.weapon-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 20px;
+}
+
+.weapon-card {
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.1),
+            rgba(0,0,0,.7)
+        );
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    text-align: center;
+
+    transition: .3s;
+}
+
+.weapon-card:hover {
+
+    transform: translateY(-10px);
+
+    border-color: #ff4b00;
+
+    box-shadow:
+        0 10px 30px rgba(255,60,0,.25);
+}
+
+.weapon-image {
+
+    height: 130px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 80px;
+}
+
+.weapon-card h3 {
+    margin-top: 10px;
+}
+
+.weapon-type {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.weapon-stats {
+    margin-top: 15px;
+}
+
+.weapon-stat {
+    margin-top: 8px;
+}
+
+.weapon-stat p {
+
+    display: flex;
+    justify-content: space-between;
+
+    color: #aaa;
+    font-size: 12px;
+}
+
+.stat-bar {
+
+    height: 5px;
+
+    background: #222;
+
+    margin-top: 5px;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.stat-fill {
+    height: 100%;
+    background: #ff4b00;
+}
+
+/* =========================
+   STORE
+========================= */
+
+.store-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 20px;
+}
+
+.store-card {
+
+    background: rgba(255,255,255,.08);
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    transition: .3s;
+}
+
+.store-card:hover {
+
+    transform: translateY(-7px);
+
+    border-color: #ff4b00;
+}
+
+.item-icon {
+
+    font-size: 75px;
+
+    margin-bottom: 15px;
+}
+
+.price {
+
+    margin-top: 10px;
+
+    color: #ffd23f;
+
+    font-weight: bold;
+}
+
+.buy-btn {
+
+    width: 100%;
+
+    margin-top: 15px;
+
+    padding: 10px;
+
+    background: #ff4b00;
+
+    border: none;
+
+    color: white;
+
+    font-weight: bold;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+}
+
+.buy-btn:hover {
+    background: #ff711c;
+}
+
+/* =========================
+   REWARDS
+========================= */
+
+.reward-box {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    text-align: center;
+
+    padding: 45px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,60,0,.2),
+            rgba(0,0,0,.7)
+        );
+
+    border-radius: 20px;
+
+    border: 1px solid rgba(255,70,0,.3);
+}
+
+.reward-icon {
+    font-size: 100px;
+
+    animation:
+        rewardPulse 1.5s infinite;
+}
+
+@keyframes rewardPulse {
+
+    0%,100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.claim-btn {
+
+    margin-top: 25px;
+
+    padding: 14px 45px;
+
+    border: none;
+
+    background: #ff4b00;
+
+    color: white;
+
+    border-radius: 7px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* =========================
+   INVENTORY
+========================= */
+
+.inventory-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 15px;
+}
+
+.inventory-item {
+
+    height: 150px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(255,255,255,.07);
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    border-radius: 12px;
+
+    transition: .3s;
+}
+
+.inventory-item:hover {
+
+    border-color: #ff4b00;
+
+    transform: scale(1.04);
+}
+
+.inventory-item div {
+    font-size: 55px;
+}
+
+.inventory-item p {
+    color: #aaa;
+    margin-top: 8px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    background:
+        rgba(15,15,15,.95);
+
+    border-left: 4px solid #ff4b00;
+
+    padding: 16px 22px;
+
+    border-radius: 8px;
+
+    transform: translateX(150%);
+
+    transition: .4s;
+
+    z-index: 100;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width: 1000px) {
+
+    .home-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .character-area {
+        min-height: 500px;
+    }
+
+    .weapon-grid,
+    .store-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .inventory-grid {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .right-panel {
+        display: grid;
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+}
+
+@media(max-width: 650px) {
+
+    .navbar {
+        height: auto;
+        padding: 15px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .nav-links {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .nav-btn {
+        padding: 9px 12px;
+        white-space: nowrap;
+    }
+
+    .main {
+        padding: 15px;
+    }
+
+    .character {
+        font-size: 170px;
+    }
+
+    .play-btn {
+        padding: 16px 55px;
+    }
+
+    .weapon-grid,
+    .store-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .right-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .currency {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     PARTICLES
+========================= -->
+
+<div class="particles">
+
+    <div class="particle" style="left:10%;animation-delay:0s"></div>
+    <div class="particle" style="left:20%;animation-delay:2s"></div>
+    <div class="particle" style="left:35%;animation-delay:4s"></div>
+    <div class="particle" style="left:50%;animation-delay:1s"></div>
+    <div class="particle" style="left:65%;animation-delay:3s"></div>
+    <div class="particle" style="left:80%;animation-delay:5s"></div>
+    <div class="particle" style="left:90%;animation-delay:2s"></div>
+
+</div>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header class="navbar">
+
+    <div class="logo">
+        ⚡ BATTLE<span>ZONE</span>
+    </div>
+
+    <nav class="nav-links">
+
+        <button class="nav-btn active"
+        onclick="showPage('home',this)">
+            🏠 Lobby
+        </button>
+
+        <button class="nav-btn"
+        onclick="showPage('weapons',this)">
+            🔫 Weapons
+        </button>
+
+        <button class="nav-btn"
+        onclick="showPage('store',this)">
+            🛒 Store
+        </button>
+
+        <button class="nav-btn"
+        onclick="showPage('rewards',this)">
+            🎁 Rewards
+        </button>
+
+        <button class="nav-btn"
+        onclick="showPage('inventory',this)">
+            🎒 Inventory
+        </button>
+
+    </nav>
+
+    <div class="currency">
+
+        <div class="money coin">
+            🪙 <span id="coins">12500</span>
+        </div>
+
+        <div class="money diamond">
+            💎 <span id="diamonds">2450</span>
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="main">
+
+
+<!-- =========================
+     HOME PAGE
+========================= -->
+
+<section id="home" class="page active">
+
+<div class="home-layout">
+
+
+<!-- PROFILE -->
+
+<div class="profile-card">
+
+    <div class="avatar">
+        🧑‍🚀
+    </div>
+
+    <div class="username">
+        ShadowX
+    </div>
+
+    <div class="level">
+        Level 42 • Elite Player
+    </div>
+
+    <div class="xp-box">
+
+        <div class="xp-info">
+            <span>XP Progress</span>
+            <span>7200 / 10000</span>
+        </div>
+
+        <div class="xp-bar">
+            <div class="xp-progress"></div>
+        </div>
+
+    </div>
+
+    <div class="stats">
+
+        <div class="stat">
+            <span>🏆 Rank</span>
+            <span>Gold III</span>
+        </div>
+
+        <div class="stat">
+            <span>🎮 Matches</span>
+            <span>328</span>
+        </div>
+
+        <div class="stat">
+            <span>🥇 Wins</span>
+            <span>87</span>
+        </div>
+
+        <div class="stat">
+            <span>💀 Kills</span>
+            <span>1248</span>
+        </div>
+
+        <div class="stat">
+            <span>🎯 K/D</span>
+            <span>3.80</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CHARACTER -->
+
+<div class="character-area">
+
+    <div class="character-glow"></div>
+
+    <div class="character">
+        🧑‍🎤
+    </div>
+
+    <div class="character-name">
+        SHADOW WARRIOR
+    </div>
+
+    <div class="character-title">
+        The Last Survivor
+    </div>
+
+    <button class="play-btn"
+    onclick="startGame()">
+
+        ▶ PLAY NOW
+
+    </button>
+
+</div>
+
+
+<!-- EVENTS -->
+
+<div class="right-panel">
+
+    <div class="event-card">
+
+        <h3>🔥 Battle Pass</h3>
+
+        <p>
+            Complete missions and unlock
+            exclusive rewards.
+        </p>
+
+        <button class="event-btn"
+        onclick="notify('Battle Pass opened!')">
+            VIEW PASS
+        </button>
+
+    </div>
+
+
+    <div class="event-card">
+
+        <h3>⚔️ Ranked Season</h3>
+
+        <p>
+            Season 12 is live.
+            Reach the highest rank.
+        </p>
+
+        <button class="event-btn"
+        onclick="notify('Ranked mode selected!')">
+            PLAY RANKED
+        </button>
+
+    </div>
+
+
+    <div class="event-card">
+
+        <h3>🎯 Daily Mission</h3>
+
+        <p>
+            Get 10 eliminations and
+            earn 500 XP.
+        </p>
+
+        <button class="event-btn"
+        onclick="notify('Mission started!')">
+            START
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     WEAPONS PAGE
+========================= -->
+
+<section id="weapons" class="page">
+
+    <h1 class="section-title">
+        🔫 Weapon Arsenal
+    </h1>
+
+    <div class="weapon-grid">
+
+
+        <div class="weapon-card">
+
+            <div class="weapon-image">
+                🔫
+            </div>
+
+            <h3>Viper AR</h3>
+
+            <p class="weapon-type">
+                Assault Rifle
+            </p>
+
+            <div class="weapon-stats">
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Damage</span>
+                        <span>85%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:85%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Range</span>
+                        <span>72%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:72%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Accuracy</span>
+                        <span>90%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:90%"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="weapon-card">
+
+            <div class="weapon-image">
+                🔥
+            </div>
+
+            <h3>Inferno SMG</h3>
+
+            <p class="weapon-type">
+                Sub Machine Gun
+            </p>
+
+            <div class="weapon-stats">
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Damage</span>
+                        <span>70%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:70%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Fire Rate</span>
+                        <span>95%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:95%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Accuracy</span>
+                        <span>65%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:65%"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="weapon-card">
+
+            <div class="weapon-image">
+                💥
+            </div>
+
+            <h3>Thunder Shotgun</h3>
+
+            <p class="weapon-type">
+                Shotgun
+            </p>
+
+            <div class="weapon-stats">
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Damage</span>
+                        <span>98%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:98%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Range</span>
+                        <span>45%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:45%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Accuracy</span>
+                        <span>60%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:60%"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="weapon-card">
+
+            <div class="weapon-image">
+                🎯
+            </div>
+
+            <h3>Phantom Sniper</h3>
+
+            <p class="weapon-type">
+                Sniper Rifle
+            </p>
+
+            <div class="weapon-stats">
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Damage</span>
+                        <span>100%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:100%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Range</span>
+                        <span>100%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:100%"></div>
+                    </div>
+                </div>
+
+                <div class="weapon-stat">
+                    <p>
+                        <span>Fire Rate</span>
+                        <span>40%</span>
+                    </p>
+
+                    <div class="stat-bar">
+                        <div class="stat-fill"
+                        style="width:40%"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     STORE
+========================= -->
+
+<section id="store" class="page">
+
+    <h1 class="section-title">
+        🛒 Battle Store
+    </h1>
+
+    <div class="store-grid">
+
+
+        <div class="store-card">
+
+            <div class="item-icon">
+                🗡️
+            </div>
+
+            <h3>Shadow Blade</h3>
+
+            <p>Epic Weapon Skin</p>
+
+            <div class="price">
+                💎 750
+            </div>
+
+            <button class="buy-btn"
+            onclick="buyItem(750,'Shadow Blade')">
+                BUY
+            </button>
+
+        </div>
+
+
+        <div class="store-card">
+
+            <div class="item-icon">
+                🪖
+            </div>
+
+            <h3>Elite Helmet</h3>
+
+            <p>Rare Equipment</p>
+
+            <div class="price">
+                💎 500
+            </div>
+
+            <button class="buy-btn"
+            onclick="buyItem(500,'Elite Helmet')">
+                BUY
+            </button>
+
+        </div>
+
+
+        <div class="store-card">
+
+            <div class="item-icon">
+                🛡️
+            </div>
+
+            <h3>Battle Armor</h3>
+
+            <p>Legendary Outfit</p>
+
+            <div class="price">
+                💎 1200
+            </div>
+
+            <button class="buy-btn"
+            onclick="buyItem(1200,'Battle Armor')">
+                BUY
+            </button>
+
+        </div>
+
+
+        <div class="store-card">
+
+            <div class="item-icon">
+                🚀
+            </div>
+
+            <h3>Rocket Backpack</h3>
+
+            <p>Epic Backpack</p>
+
+            <div class="price">
+                💎 900
+            </div>
+
+            <button class="buy-btn"
+            onclick="buyItem(900,'Rocket Backpack')">
+                BUY
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     REWARDS
+========================= -->
+
+<section id="rewards" class="page">
+
+    <h1 class="section-title">
+        🎁 Daily Reward
+    </h1>
+
+    <div class="reward-box">
+
+        <div class="reward-icon">
+            🎁
+        </div>
+
+        <h2>Daily Login Reward</h2>
+
+        <p style="color:#aaa;margin-top:10px">
+            Come back every day to collect
+            exclusive rewards.
+        </p>
+
+        <button class="claim-btn"
+        onclick="claimReward()">
+
+            CLAIM REWARD
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     INVENTORY
+========================= -->
+
+<section id="inventory" class="page">
+
+    <h1 class="section-title">
+        🎒 My Inventory
+    </h1>
+
+    <div class="inventory-grid">
+
+        <div class="inventory-item">
+            <div>🔫</div>
+            <p>Viper AR</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>🗡️</div>
+            <p>Shadow Blade</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>🪖</div>
+            <p>Elite Helmet</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>🛡️</div>
+            <p>Battle Armor</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>🎒</div>
+            <p>Level 3 Bag</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>💣</div>
+            <p>Grenade</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>❤️</div>
+            <p>Med Kit</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>🔭</div>
+            <p>Scope</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>⚡</div>
+            <p>Energy Core</p>
+        </div>
+
+        <div class="inventory-item">
+            <div>🧤</div>
+            <p>Combat Gloves</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- TOAST -->
+
+<div id="toast" class="toast">
+    Welcome to BattleZone!
+</div>
+
+
+<script>
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(pageId, button) {
+
+    // Hide all pages
+    const pages =
+        document.querySelectorAll(".page");
+
+    pages.forEach(page => {
+        page.classList.remove("active");
+    });
+
+    // Show selected page
+    document
+        .getElementById(pageId)
+        .classList.add("active");
+
+
+    // Remove active buttons
+    const buttons =
+        document.querySelectorAll(".nav-btn");
+
+    buttons.forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+
+    // Activate selected button
+    button.classList.add("active");
+}
+
+
+/* =========================
+   TOAST MESSAGE
+========================= */
+
+function notify(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2500);
+}
+
+
+/* =========================
+   PLAY GAME
+========================= */
+
+function startGame() {
+
+    notify("🎮 Searching for players...");
+
+    setTimeout(() => {
+
+        notify("🔥 Match found! Battle starting...");
+
+    }, 2000);
+
+}
+
+
+/* =========================
+   BUY ITEM
+========================= */
+
+function buyItem(price, itemName) {
+
+    let diamonds =
+        Number(
+            document
+            .getElementById("diamonds")
+            .textContent
+        );
+
+
+    if (diamonds >= price) {
+
+        diamonds -= price;
+
+        document
+            .getElementById("diamonds")
+            .textContent = diamonds;
+
+        notify(
+            "✅ " +
+            itemName +
+            " purchased!"
+        );
+
+    } else {
+
+        notify(
+            "❌ Not enough diamonds!"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   DAILY REWARD
+========================= */
+
+function claimReward() {
+
+    let coins =
+        Number(
+            document
+            .getElementById("coins")
+            .textContent
+        );
+
+
+    coins += 500;
+
+
+    document
+        .getElementById("coins")
+        .textContent = coins;
+
+
+    notify(
+        "🎁 +500 coins added!"
+    );
+
+}
+
+
+/* =========================
+   KEYBOARD SHORTCUT
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if(event.key === "Enter") {
+
+            notify(
+                "Press PLAY NOW to start!"
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
